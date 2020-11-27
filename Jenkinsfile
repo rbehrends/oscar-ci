@@ -79,6 +79,7 @@ node(label: nodeLabel) {
     def gap_version = "${params.GAP_VERSION}"
     def buildtype = "${params.BUILDTYPE}"
     def rebuild = rebuildMode()
+    env.OSCAR_CI_CONFIG = "meta/config/jenkins.yaml"
     try {
         stage('Preparation') {
 	    // Setup workspace.
@@ -86,7 +87,8 @@ node(label: nodeLabel) {
                 cleanWs disableDeferredWipeout: true, deleteDirs: true
             }
 	    updateTimestamp()
-	    get url: metarepo, dir: "meta"
+	    get url: "https://github.com/rbehrends/oscar-ci",
+	      dir: "meta", branch: "standalone"
 	    sh "meta/prepare.rb"
             // Update repositories
             if (rebuild != "none") {
